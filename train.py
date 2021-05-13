@@ -32,6 +32,7 @@ parser.add_argument('--resume', default='', type=str, required=False, help='(def
 parser.add_argument('--decay_epoch', default=(20,40,60,80,100,120,140,160,180), type=eval, required=False, help='(default=%(default)d)')
 parser.add_argument('--prefix', default='test', type=str, required=False, help='(default=%(default)s)')
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', required=False, help='evaluate model on validation set')
+parser.add_argument('--savePath', default='./', type=str,required=True, help='Modelsaving path ')
 
 # Seed
 np.random.seed(1)
@@ -125,7 +126,7 @@ def main():
 
 
     if args.evaluate:
-        pdb.set_trace()
+        
         test(val_loader, model, attr_num, description)
         return
 
@@ -145,7 +146,8 @@ def main():
         best_accu = max(accu, best_accu)
         # pdb.set_trace()
 
-        if epoch in args.decay_epoch:
+        if epoch % 5 == 0 : #in args.decay_epoch:
+        
             save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
@@ -344,9 +346,9 @@ def test(val_loader, model, attr_num, description):
     print('=' * 100)
 
 
-def save_checkpoint(state, epoch, prefix, filename='.pth.tar'):
+def save_checkpoint(state,epoch, prefix, filename='.pth.tar'):
     """Saves checkpoint to disk"""
-    directory = "/home/abhilash.sk/zzz_projects/HoneywellVA/iccv19_attribute/testsave" + args.experiment + '/' + args.approach + '/'
+    directory = args.savePath + args.experiment + '/' + args.approach + '/'
     if not os.path.exists(directory):
         os.makedirs(directory)
     if prefix == '':
